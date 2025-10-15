@@ -10,21 +10,15 @@
 #region using
 
 using System;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.Threading;
 using System.Windows.Forms;
+
 using ArkaneSystems.MouseJiggler.Properties;
-using JetBrains.Annotations;
-using Windows.Win32;
 
 #endregion
 
 namespace ArkaneSystems.MouseJiggler
 {
-
-  [PublicAPI]
   public static class Program
   {
     /// <summary>
@@ -34,7 +28,7 @@ namespace ArkaneSystems.MouseJiggler
     public static int Main(string[] args)
     {
       // Attach to the parent process's console so we can display help, version information, and command-line errors.
-      PInvoke.AttachConsole(Helpers.AttachParentProcess);
+      Helpers.AttachConsole();
 
       // Ensure that we are the only instance of the Mouse Jiggler currently running.
       var instance = new Mutex(false, "single instance: ArkaneSystems.MouseJiggler");
@@ -45,7 +39,10 @@ namespace ArkaneSystems.MouseJiggler
 
         // Parse arguments and do the appropriate thing.
         {
+#if false
           return GetCommandLineParser().Invoke(args);
+#endif
+          return RootHandler(false, Settings.Default.MinimizeOnStartup, Settings.Default.ZenJiggle, Settings.Default.JigglePeriod);
         }
         else
         {
@@ -59,7 +56,7 @@ namespace ArkaneSystems.MouseJiggler
         instance.Close();
 
         // Detach from the parent console.
-        PInvoke.FreeConsole();
+        Helpers.FreeConsole();
       }
     }
 
@@ -79,6 +76,23 @@ namespace ArkaneSystems.MouseJiggler
       Application.Run(mainForm);
 
       return 0;
+    }
+
+#if false
+    private static void ShowHelp()
+    {
+      Console.WriteLine("Virtually jiggles the mouse, making the computer seem not idle.");
+      Console.WriteLine("");
+      Console.WriteLine("Usage:");
+      Console.WriteLine("  MouseJiggler-Framework [options]");
+      Console.WriteLine("");
+      Console.WriteLine("Options:");
+      Console.WriteLine("  -j, --jiggle               Start with jiggling enabled. [default: False]");
+      Console.WriteLine("  -m, --minimized            Start minimized. [default: False]");
+      Console.WriteLine("  -z, --zen                  Start with zen (invisible) jiggling enabled. [default: False]");
+      Console.WriteLine("  -s, --seconds <seconds>    Set X number of seconds for the jiggle interval. [default: 60]");
+      Console.WriteLine("  --version                  Show version information");
+      Console.WriteLine("  -?, -h, --help             Show help and usage information");
     }
 
     private static RootCommand GetCommandLineParser()
@@ -125,5 +139,6 @@ namespace ArkaneSystems.MouseJiggler
       // Build the command line parser.
       return rootCommand;
     }
+#endif
   }
 }
