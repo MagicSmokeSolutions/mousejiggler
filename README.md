@@ -1,3 +1,8 @@
+About this Branch
+=================
+
+This version is a minimal modification of the original, which adds a MouseJiggler-Full-Framework project. Built with .NET 4.8 and no other dependencies, it creates a single executable file (under 80KB) that runs on Windows using only the built-in .NET Framework. The decision to use .NET 4.8 is a deliberate one: while .NET 5+ used by the original project is popular, its ever-changing nature and constant need for updates make it less suitable for simple utilities than .NET 4.8, whose updates are delivered alongside the operating system.
+
 mousejiggler
 ============
 
